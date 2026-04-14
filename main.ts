@@ -12,6 +12,26 @@ interface TimeTrackingSettings {
   openTodayNoteAfterToggle: boolean;
 }
 
+interface DailyNotesPluginInstance {
+  options?: {
+    folder?: string;
+    format?: string;
+  };
+}
+
+interface DailyNotesPlugin {
+  enabled?: boolean;
+  instance?: DailyNotesPluginInstance;
+}
+
+interface InternalPlugins {
+  plugins?: Record<string, DailyNotesPlugin>;
+}
+
+interface AppWithInternal extends App {
+  internalPlugins?: InternalPlugins;
+}
+
 const DEFAULT_SETTINGS: TimeTrackingSettings = {
   autoAppendDuration: true,
   durationPosition: 'end',
@@ -63,8 +83,7 @@ export default class TimeTrackingPlugin extends Plugin {
   }
 
   async loadSettings() {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData()) as TimeTrackingSettings;
   }
 
   async saveSettings() {
@@ -300,8 +319,8 @@ export default class TimeTrackingPlugin extends Plugin {
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
     
-    /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any */
-    const dailyNotesPlugin = (this.app as any).internalPlugins?.plugins?.['daily-notes'];
+const app = this.app as AppWithInternal;
+    const dailyNotesPlugin = app.internalPlugins?.plugins?.['daily-notes'];
     if (dailyNotesPlugin?.enabled) {
       const config = dailyNotesPlugin.instance?.options || {};
       const folder: string = config.folder || '';
@@ -314,7 +333,6 @@ export default class TimeTrackingPlugin extends Plugin {
       
       return folder ? `${folder}/${fileName}.md` : `${fileName}.md`;
     }
-    /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any */
     
     return `${year}-${month}-${day}.md`;
   }
