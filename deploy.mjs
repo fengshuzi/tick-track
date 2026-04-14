@@ -17,27 +17,27 @@ const NOTE_DEMO_PATH = join(
 const VAULTS = [
   {
     name: 'Mobile',
-    path: join(BASE_PATH, '.obsidian-mobile/plugins/obsidian-time-tracking')
+    path: join(BASE_PATH, '.obsidian-mobile/plugins/tick-track')
   },
   {
     name: 'Pro',
-    path: join(BASE_PATH, '.obsidian-pro/plugins/obsidian-time-tracking')
+    path: join(BASE_PATH, '.obsidian-pro/plugins/tick-track')
   },
   {
     name: 'iPad',
-    path: join(BASE_PATH, '.obsidian-ipad/plugins/obsidian-time-tracking')
+    path: join(BASE_PATH, '.obsidian-ipad/plugins/tick-track')
   },
   {
     name: '2017',
-    path: join(BASE_PATH, '.obsidian-2017/plugins/obsidian-time-tracking')
+    path: join(BASE_PATH, '.obsidian-2017/plugins/tick-track')
   },
   {
     name: 'Zhang',
-    path: join(BASE_PATH, '.obsidian-zhang/plugins/obsidian-time-tracking')
+    path: join(BASE_PATH, '.obsidian-zhang/plugins/tick-track')
   },
   {
     name: 'Note-Demo',
-    path: join(NOTE_DEMO_PATH, '.obsidian/plugins/obsidian-time-tracking')
+    path: join(NOTE_DEMO_PATH, '.obsidian/plugins/tick-track')
   }
 ];
 
@@ -47,7 +47,7 @@ const FILES_TO_COPY = [
   { source: 'dist/manifest.json', target: 'manifest.json' }
 ];
 
-console.log('📦 开始部署 Time Tracking 插件到所有 vaults...\n');
+console.log('📦 开始部署 Tick Track 插件到所有 vaults...\n');
 
 // 复制文件到每个 vault
 VAULTS.forEach(vault => {

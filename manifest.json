@@ -1,9 +1,10 @@
 {
-  "id": "obsidian-time-tracking",
-  "name": "Time Tracking",
-  "version": "0.1.0",
-  "minAppVersion": "0.12.0",
-  "description": "Track time spent on tasks with automatic duration calculation. Toggle task status with Cmd+Enter to start/stop tracking.",
-  "author": "lizhifeng",
-  "isDesktopOnly": false
+    "id": "tick-track",
+    "name": "Tick Track",
+    "version": "1.0.0",
+    "minAppVersion": "1.2.8",
+    "description": "Track time spent on tasks with automatic duration calculation - toggle task status to start/stop tracking.",
+    "author": "lizhifeng",
+    "authorUrl": "https://github.com/fengshuzi",
+    "isDesktopOnly": false
 }

@@ -29,39 +29,22 @@ class TodoCheckboxWidget extends WidgetType {
     checkbox.checked = this.status === 'DONE' || this.status === 'CANCELED';
     checkbox.dataset.status = this.status;
 
-    // 使用捕获阶段的事件监听，确保第一次点击就能响应
     const handleClick = (e: MouseEvent) => {
-      console.log(`[TimeTracking] mousedown 捕获 - 状态: ${this.status}`);
-      
       e.preventDefault();
       e.stopPropagation();
-      e.stopImmediatePropagation(); // 阻止其他监听器
+      e.stopImmediatePropagation();
       
-      // 如果是 DOING 状态，调用完整的 toggleTaskStatus 逻辑来处理时间统计
       if (this.status === 'DOING') {
-        console.log('[TimeTracking] 检测到 DOING 状态，调用完整逻辑');
+        const line = view.state.doc.lineAt(this.from);
+        const lineNumber = line.number - 1;
         
-        const pos = this.from;
-        const line = view.state.doc.lineAt(pos);
-        const lineNumber = line.number - 1; // 转换为 0-based
-        
-        console.log(`[TimeTracking] 行号: ${lineNumber}, 行内容: "${line.text}"`);
-        
-        // 通过 Obsidian API 获取当前活动的编辑器
         const activeView = this.plugin.app.workspace.getActiveViewOfType(MarkdownView);
         if (activeView) {
-          console.log('[TimeTracking] 找到活动视图');
           const editor = activeView.editor;
-          // 设置光标到当前行
           editor.setCursor({ line: lineNumber, ch: 0 });
-          // 调用完整的切换逻辑（会处理时间统计）
           this.plugin.toggleTaskStatus(editor);
-        } else {
-          console.log('[TimeTracking] 未找到活动视图');
         }
       } else {
-        // 其他状态简单切换 TODO/DONE
-        console.log(`[TimeTracking] 简单切换: ${this.status} → ${this.status === 'DONE' ? 'TODO' : 'DONE'}`);
         const newStatus = this.status === 'DONE' ? 'TODO' : 'DONE';
         
         view.dispatch({
@@ -74,16 +57,13 @@ class TodoCheckboxWidget extends WidgetType {
       }
     };
     
-    // 同时监听多个事件，确保能捕获到
     checkbox.addEventListener('mousedown', handleClick, true);
     checkbox.addEventListener('click', handleClick, true);
 
     return checkbox;
   }
 
-  ignoreEvent(event: Event): boolean {
-    // 完全不忽略任何事件，让所有事件都能触发
-    console.log(`[TimeTracking] ignoreEvent 被调用 - 事件类型: ${event.type}, 返回 false`);
+  ignoreEvent(): boolean {
     return false;
   }
 }
@@ -114,7 +94,6 @@ class TodoStatusWidget extends WidgetType {
 function createDecorations(view: EditorView, plugin: TimeTrackingPlugin): DecorationSet {
   const builder = new RangeSetBuilder<Decoration>();
   
-  // 只在 Live Preview 模式下工作
   if (!view.state.field(editorLivePreviewField)) {
     return builder.finish();
   }
@@ -131,7 +110,6 @@ function createDecorations(view: EditorView, plugin: TimeTrackingPlugin): Decora
         const statusStart = line.from + listMarkerLen;
         const statusEnd = statusStart + status.length;
 
-        // 替换状态关键词为复选框
         builder.add(
           statusStart,
           statusEnd,
@@ -146,7 +124,6 @@ function createDecorations(view: EditorView, plugin: TimeTrackingPlugin): Decora
           })
         );
 
-        // 如果启用了状态标签且不是 TODO/DONE，添加标签
         if (plugin.settings.showStatusLabel && status !== 'TODO' && status !== 'DONE') {
           builder.add(
             statusEnd,
@@ -158,16 +135,13 @@ function createDecorations(view: EditorView, plugin: TimeTrackingPlugin): Decora
           );
         }
 
-        // 隐藏 HTML 时间注释（支持状态后的注释）
-        // 首先检查状态后是否有时间显示和注释
+        // 隐藏 HTML 时间注释
         const statusEndInLine = listMarkerLen + status.length;
         const afterStatusText = lineText.substring(statusEndInLine);
         
-        // 匹配时间显示和注释：可能是 " HH:MM <!-- ... -->" 或只是 " <!-- ... -->"
         const timeAndCommentMatch = afterStatusText.match(/^(\s+\d{2}:\d{2})?\s*(<!--\s*ts:[^>]*?-->)/);
         
         if (timeAndCommentMatch) {
-          // 只隐藏注释部分，保留时间显示
           const commentStartInAfterStatus = afterStatusText.indexOf(timeAndCommentMatch[2]);
           const commentStart = line.from + statusEndInLine + commentStartInAfterStatus;
           const commentEnd = commentStart + timeAndCommentMatch[2].length;
@@ -181,7 +155,6 @@ function createDecorations(view: EditorView, plugin: TimeTrackingPlugin): Decora
             })
           );
         } else {
-          // 兼容旧格式：内容中的注释
           const contentCommentMatch = content.match(/<!--\s*ts:[^>]*?-->/);
           if (contentCommentMatch) {
             const commentStartInContent = content.indexOf(contentCommentMatch[0]);
@@ -199,7 +172,7 @@ function createDecorations(view: EditorView, plugin: TimeTrackingPlugin): Decora
           }
         }
 
-        // 如果是完成状态且启用删除线，添加样式
+        // 完成状态删除线
         if ((status === 'DONE' || status === 'CANCELED') && plugin.settings.enableStrikethrough) {
           const contentStart = statusEnd + 1;
           builder.add(
@@ -242,7 +215,6 @@ export function createTimeTrackingExtension(plugin: TimeTrackingPlugin) {
         decorations: (v) => v.decorations
       }
     ),
-    // 添加基础样式
     EditorView.baseTheme({
       '.time-tracking-live-checkbox': {
         cursor: 'pointer',
