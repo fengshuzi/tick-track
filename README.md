@@ -130,7 +130,14 @@
 
 ## 安装
 
-### 手动安装
+### Obsidian 社区市场安装（推荐）
+
+打开 Obsidian 设置 → 第三方插件 → 浏览，搜索 **Tick Track** 或 **fengshuzi** 即可安装。
+
+### 从源码构建
+
+
+### 从源码构建
 
 1. 下载最新的 `main.js` 和 `manifest.json`
 2. 在 vault 的 `.obsidian/plugins/` 目录下创建 `obsidian-time-tracking` 文件夹
