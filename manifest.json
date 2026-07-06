@@ -1,7 +1,7 @@
 {
     "id": "tick-track",
     "name": "Tick Track",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "minAppVersion": "1.2.8",
     "description": "Track time spent on tasks with automatic duration calculation - toggle task status to start/stop tracking.",
     "author": "lizhifeng",

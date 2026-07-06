@@ -1,6 +1,6 @@
 {
   "name": "tick-track",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Track time spent on tasks with automatic duration calculation",
   "main": "main.js",
   "scripts": {
